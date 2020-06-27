@@ -85,9 +85,8 @@ public class AuthController {
 	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
-
+		// Chek if the Dto is ok, before call service
 		cuDtoValid.validate(createUserDto, errors);
-		
 		// Create new user's account
 		User user = authService.createUser(createUserDto);
 

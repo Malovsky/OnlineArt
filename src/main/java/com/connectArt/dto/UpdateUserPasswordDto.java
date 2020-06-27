@@ -9,20 +9,12 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateUserDto {
+public class UpdateUserPasswordDto {
 	
 	UUID id;
 	
-	String username;
+	String previousPassword;
 	
-	String email;
-	
-	String firstName;
-	
-	String lastName;
-	
-	String address;
-	
-	String biography;
+	String newPassword;
 	
 }

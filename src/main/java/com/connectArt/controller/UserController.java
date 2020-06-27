@@ -6,22 +6,29 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectArt.dto.UpdateUserDto;
+import com.connectArt.dto.UpdateUserPasswordDto;
 import com.connectArt.model.User;
 import com.connectArt.repository.UserRepository;
 import com.connectArt.service.UserService;
+import com.connectArt.validator.UpdateUserPasswordDtoValidator;
+
+import lombok.extern.slf4j.Slf4j;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/user")
+@Slf4j
 public class UserController {
 	
 	@Autowired
@@ -30,8 +37,12 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
+	UpdateUserPasswordDtoValidator updateUserPasswordValidator;
+	
+	Errors errors;
+	
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-	@GetMapping("{/id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable("id") UUID id) {
 		return ResponseEntity.ok(userRepo.findById(id).get());
 	}
@@ -43,7 +54,7 @@ public class UserController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-	@DeleteMapping("{/id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable("id") UUID id) {
 		userRepo.deleteById(id);
 		return ResponseEntity.ok().build();
@@ -51,8 +62,18 @@ public class UserController {
 	
 	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
 	@PutMapping
-	public ResponseEntity<Void> updateUser(UpdateUserDto uuDto) {
+	public ResponseEntity<Void> updateUser(@RequestBody UpdateUserDto uuDto) {
+		log.info("id : {}", uuDto.getId());
 		userService.updateUser(uuDto);
+		return ResponseEntity.ok().build();
+	}
+	
+	@PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+	@PutMapping("/updatePass")
+	public ResponseEntity<Void> updateUserPass(@RequestBody UpdateUserPasswordDto updatePassword) {
+		log.info("id : {}", updatePassword.getId());
+		updateUserPasswordValidator.validate(updatePassword, errors);
+		userService.updateUserPassword(updatePassword);
 		return ResponseEntity.ok().build();
 	}
 	

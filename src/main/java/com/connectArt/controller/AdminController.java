@@ -25,7 +25,7 @@ public class AdminController {
 	AdminRepository amdinRepo;
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@GetMapping("{/id}")
+	@GetMapping("/{id}")
 	public ResponseEntity<Admin> getAdminById(@PathVariable("id") UUID id) {
 		return ResponseEntity.ok(amdinRepo.findById(id).get());
 	}
@@ -37,7 +37,7 @@ public class AdminController {
 	}
 	
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
-	@DeleteMapping("{/id}")
+	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteById(@PathVariable("id") UUID id) {
 		amdinRepo.deleteById(id);
 		return ResponseEntity.ok().build();

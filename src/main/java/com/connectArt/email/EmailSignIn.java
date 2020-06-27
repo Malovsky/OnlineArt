@@ -20,7 +20,7 @@ public class EmailSignIn {
 	static UserRepository userRepo;
 	
 	public static void valideSignIn(User user) {
-		log.info("Enter invalideSignIn()");
+		log.info("Enter valideSignIn()");
 		StringBuilder strgB = new StringBuilder();
 		
 		try {

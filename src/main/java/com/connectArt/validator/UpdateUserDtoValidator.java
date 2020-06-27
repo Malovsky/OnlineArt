@@ -29,9 +29,9 @@ public class UpdateUserDtoValidator implements Validator {
 			errors.reject("UpdateUserDto is null");
 		} else {
 			if (uuDto.getId() == null) {
-				errors.reject("UpdateUserDto is null");
+				errors.reject("UpdateUserDto ID is null");
 			} else {
-				if (userRepo.existsByUsername(uuDto.getUserName())) {
+				if (userRepo.existsByUsername(uuDto.getUsername())) {
 					throw new CannotUpdateUser("Ce nom d'utilisateur est déjà utilisé !");
 				} else {
 					if (userRepo.existsByEmail(uuDto.getEmail())) {
