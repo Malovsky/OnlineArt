@@ -17,4 +17,6 @@ public class UpdateUserPasswordDto {
 	
 	String newPassword;
 	
+	String checkPassword;
+	
 }

@@ -33,16 +33,20 @@ public class CreateUserDtoValidator implements Validator {
 				errors.reject("Email is empty !");
 			} else {
 				if (uuDto.getUsername() == "") {
-					errors.reject("Email is empty !");
+					errors.reject("Username is empty !");
 				} else {
 					if (uuDto.getPassword() == "") {
-						errors.reject("Email is empty !");
+						errors.reject("Password is empty !");
 					} else {
 						if (userRepo.existsByUsername(uuDto.getUsername())) {
 							throw new CannotUpdateUser("Ce nom d'utilisateur est déjà utilisé !");
 						} else {
 							if (userRepo.existsByEmail(uuDto.getEmail())) {
 								throw new CannotUpdateUser("Cet email est déjà utilisé !");
+							} else {
+								if (uuDto.getUsername().equalsIgnoreCase(uuDto.getPassword())) {
+									throw new CannotUpdateUser("Votre nom d'utilisateur et votre mot de passe ne peut être identique !");
+								}
 							}
 						}
 					}

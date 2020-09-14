@@ -2,13 +2,6 @@ package com.connectArt.dto;
 
 import java.util.UUID;
 
-import javax.persistence.Lob;
-
-import com.connectArt.enumeration.EnumCategory;
-import com.connectArt.enumeration.EnumColor;
-import com.connectArt.enumeration.EnumSubcategory;
-import com.connectArt.model.User;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,21 +20,16 @@ public class CreateArtWorkDto {
 	int availability;
 	
 	String description;
-	
-	@Lob
-	byte[] photoArtwork;
-	
-	User userDetail;
 
-	EnumCategory category;
+	String category;
 
-	EnumSubcategory subcategory;
+	String subcategory;
 
-	EnumColor majorColor;
+	String majorColor;
 	
-	boolean isSigned;
+	String isSigned;
 	
-	boolean hasFrame;
+	String hasFrame;
 	
 	String size;
 	

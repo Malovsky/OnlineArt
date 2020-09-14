@@ -45,9 +45,5 @@ public class UserService {
 		userToUpdate.setPassword(encoder.encode(updatePassword.getNewPassword()));
 		return userRepo.save(userToUpdate);
 	}
-	
-//	public void updateUserPhoto() {
-//		// TODO
-//	}
 
 }

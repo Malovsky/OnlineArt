@@ -1,8 +1,6 @@
 package com.connectArt.service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +37,7 @@ public class ArtWorkService {
 	public void createArtWork(CreateArtWorkDto cawDto) {
 		User user = userRepo.getOne(cawDto.getUserId());
 		ArtWork artWork = ArtWork.of(cawDto);
-		artWork.setUserDetail(user);
+		artWork.setUser(user);
 		artWorkRepo.save(artWork);
 		user.getArtworkList().add(artWork);
 	}
@@ -49,9 +47,7 @@ public class ArtWorkService {
 	 * @return all {@link @ArtWork} of the {@link User}
 	 */
 	public List<ArtWork> getAllUserArtWork(UUID id) {
-		Optional<User> user = userRepo.findById(id);
-		List<ArtWork> artWorkList = new ArrayList<ArtWork>();
-		artWorkList = user.get().getArtworkList();
+		List<ArtWork> artWorkList = artWorkRepo.findMyArtworks(id);
 		return artWorkList;
 	}
 	

@@ -10,7 +10,7 @@ public enum EnumCategory {
 	DRAWING("Dessin"),
 	PAINTING("Peinture"),
 	PHOTO("Photo"),
-	SCLPTURE("Sculpture");
+	SCULPTURE("Sculpture");
 	
 	private String category;
 

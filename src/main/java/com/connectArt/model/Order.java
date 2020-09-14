@@ -33,6 +33,8 @@ public class Order {
 	
 	int amount;
 	
+	int nbItem;
+	
 	@ManyToMany(targetEntity = OrderItem.class)
 	@JoinColumn(name = "orderItemList")
 	List<OrderItem> orderItemList = new ArrayList<OrderItem>();

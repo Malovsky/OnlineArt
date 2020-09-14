@@ -8,9 +8,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+
+import org.apache.commons.lang3.EnumUtils;
 
 import com.connectArt.dto.CreateArtWorkDto;
 import com.connectArt.enumeration.EnumCategory;
@@ -21,8 +21,6 @@ import com.connectArt.exception.BadEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import org.apache.commons.lang3.EnumUtils;
 
 @Entity
 @Data
@@ -42,12 +40,10 @@ public class ArtWork {
 	
 	String description;
 	
-	@Lob
-	byte[] photoArtwork;
+	String photoArtwork;
 	
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "userId")
-	User userDetail;
+	User user;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
@@ -73,20 +69,30 @@ public class ArtWork {
 		artWork.setPrice(cawDto.getPrice());
 		artWork.setAvailability(cawDto.getAvailability());
 		artWork.setDescription(cawDto.getDescription());
-		artWork.setPhotoArtwork(cawDto.getPhotoArtwork());
-		artWork.setUserDetail(null);
-		if (!EnumUtils.isValidEnum(EnumCategory.class, cawDto.getCategory().toString())) {
+		artWork.setUser(null);
+		if (!EnumUtils.isValidEnum(EnumCategory.class, cawDto.getCategory())) {
 			throw new BadEnum("Error : cette catégorie ne fait pas partie de notre liste !");
 		}
-		artWork.setCategory(cawDto.getCategory());
-		if (!EnumUtils.isValidEnum(EnumSubcategory.class, cawDto.getSubcategory().toString())) {
+		artWork.setCategory(EnumUtils.getEnum(EnumCategory.class, cawDto.getCategory()));
+		if (!EnumUtils.isValidEnum(EnumSubcategory.class, cawDto.getSubcategory())) {
 			throw new BadEnum("Error : cette sous catégorie ne fait pas partie de notre liste !");
 		}
-		artWork.setSubcategory(cawDto.getSubcategory());
-		if (!EnumUtils.isValidEnum(EnumColor.class, cawDto.getMajorColor().toString())) {
+		artWork.setSubcategory(EnumUtils.getEnum(EnumSubcategory.class, cawDto.getSubcategory()));
+		if (!EnumUtils.isValidEnum(EnumColor.class, cawDto.getMajorColor())) {
 			throw new BadEnum("Error : cette couleur ne fait pas partie de notre liste !");
 		}
-		artWork.setMajorColor(cawDto.getMajorColor());
+		artWork.setMajorColor(EnumUtils.getEnum(EnumColor.class, cawDto.getMajorColor()));
+		if (cawDto.getIsSigned().equals("OUI")) {
+			artWork.setSigned(true);
+		} else if (cawDto.getIsSigned().equals("NON")) {			
+			artWork.setSigned(false);
+		}
+		if (cawDto.getHasFrame().equals("OUI")) {
+			artWork.setHasFrame(true); 
+		} else if (cawDto.getHasFrame().equals("NON")) {			
+			artWork.setHasFrame(false); 
+		}
+		artWork.setSize(cawDto.getSize());
 		return artWork;
 	}
 	

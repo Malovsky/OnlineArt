@@ -10,10 +10,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -30,21 +30,24 @@ public class User extends Admin {
 	
 	String biography;
 	
-	@Lob
-	byte[] photoProfile;
+	String photoProfile;
 	
 	@OneToMany(targetEntity = OrderItem.class)
 	@JoinColumn(name = "orderList")
 	List<Order> orderList = new ArrayList<Order>();
 	
-	@OneToMany(targetEntity = ArtWork.class) // vérifier la classe target
-	@JoinColumn(name = "artWorkList")
+	@JsonIgnore
+	@OneToMany(mappedBy="user")
 	List<ArtWork> artworkList = new ArrayList<ArtWork>();
 
 	public User(UUID id, String pseudo, String password, String email, Set<Role> roles, List<Order> orderList, List<ArtWork> artworkList) {
 		super(id, pseudo, password, email, roles);
 		this.orderList = orderList;
 		this.artworkList = artworkList;
+	}
+	
+	public User(UUID id, String pseudo, String password, String email, Set<Role> roles) {
+		super(id, pseudo, password, email, roles);
 	}
 	
 	

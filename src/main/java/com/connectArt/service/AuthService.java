@@ -15,6 +15,7 @@ import com.connectArt.model.ArtWork;
 import com.connectArt.model.Order;
 import com.connectArt.model.Role;
 import com.connectArt.model.User;
+import com.connectArt.repository.AdminRepository;
 import com.connectArt.repository.RoleRepository;
 import com.connectArt.repository.UserRepository;
 
@@ -30,8 +31,11 @@ public class AuthService {
 	
 	PasswordEncoder encoder;
 	
+	AdminRepository adminRepo;
+	
 	@Autowired
-	public AuthService(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder encoder) {
+	public AuthService(AdminRepository adminRepo, UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder encoder) {
+		this.adminRepo = adminRepo;
 		this.userRepo = userRepo;
 		this.roleRepo = roleRepo;
 		this.encoder = encoder;
@@ -50,10 +54,27 @@ public class AuthService {
 		Set<Role> rolesList = new HashSet<>();
 		rolesList.add(userRole);
 		
-		User user = new User(null, createUserDto.getUsername(), encoder.encode(createUserDto.getPassword()), createUserDto.getEmail(), rolesList, new ArrayList<Order>(), new ArrayList<ArtWork>());
+		User user = new User(null, createUserDto.getUsername(),
+				encoder.encode(createUserDto.getPassword()),
+				createUserDto.getEmail(),
+				rolesList, new ArrayList<Order>(),
+				new ArrayList<ArtWork>());
 		userRepo.save(user);
 		
 		EmailSignIn.valideSignIn(user);
+		
+		return user;
+	}
+	
+	public User createAdmin(CreateUserDto createUserDto) {
+		log.info("Call createAdmin()");
+		
+		Role role = roleRepo.findByName(ERole.ROLE_ADMIN);
+		Set<Role> rolesList = new HashSet<>();
+		rolesList.add(role);
+		
+		User user = new User(null, createUserDto.getUsername(), encoder.encode(createUserDto.getPassword()), createUserDto.getEmail(), rolesList);
+		userRepo.save(user);
 		
 		return user;
 	}

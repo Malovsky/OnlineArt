@@ -12,6 +12,9 @@ import com.connectArt.model.ArtWork;
 
 public interface ArtWorkRepository extends JpaRepository<ArtWork, UUID>{
 	
+	@Query(value = "SELECT * FROM art_work WHERE user_id = ?1", nativeQuery = true)
+	List<ArtWork> findMyArtworks(UUID userId);
+
 	@Query(value = "SELECT * FROM art_work WHERE name LIKE %?1%", nativeQuery = true)
 	List<ArtWork> findByName(String name);
 	
@@ -20,5 +23,4 @@ public interface ArtWorkRepository extends JpaRepository<ArtWork, UUID>{
 	
 	@Query(value = "SELECT * FROM art_work WHERE subcategory = ?1", nativeQuery = true)
 	List<ArtWork> findBySubCategory(EnumSubcategory enumSubCat);
-	
 }

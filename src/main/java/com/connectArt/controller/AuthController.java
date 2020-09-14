@@ -23,6 +23,7 @@ import com.connectArt.dto.CreateUserDto;
 import com.connectArt.dto.JwtResponse;
 import com.connectArt.dto.LoginRequest;
 import com.connectArt.model.User;
+import com.connectArt.repository.AdminRepository;
 import com.connectArt.repository.RoleRepository;
 import com.connectArt.repository.UserRepository;
 import com.connectArt.security.jwt.JwtUtils;
@@ -30,9 +31,12 @@ import com.connectArt.security.service.UserDetailsImpl;
 import com.connectArt.service.AuthService;
 import com.connectArt.validator.CreateUserDtoValidator;
 
+import lombok.extern.slf4j.Slf4j;
+
 @CrossOrigin	/*(origins = "*", maxAge = 3600)*/
 @RestController
 @RequestMapping("/api/auth")
+@Slf4j
 public class AuthController {
 	
 	@Autowired
@@ -43,6 +47,9 @@ public class AuthController {
 
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	AdminRepository adminRepo;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -61,8 +68,7 @@ public class AuthController {
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
-		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
@@ -85,10 +91,26 @@ public class AuthController {
 	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDto createUserDto) {
+		log.info("AuthController : Call createUser()");
 		// Chek if the Dto is ok, before call service
 		cuDtoValid.validate(createUserDto, errors);
 		// Create new user's account
 		User user = authService.createUser(createUserDto);
+
+		return ResponseEntity.ok(user);
+	}
+	
+	/**
+	 * @param createUserDto
+	 * @return
+	 */
+	@PostMapping("/signup/admin")
+	public ResponseEntity<?> createAdmin(@Valid @RequestBody CreateUserDto createUserDto) {
+		log.info("AuthController : Call createAdmin()");
+		// Check if the Dto is ok, before call service
+		cuDtoValid.validate(createUserDto, errors);
+		// Create new admin's account
+		User user = authService.createAdmin(createUserDto);
 
 		return ResponseEntity.ok(user);
 	}
