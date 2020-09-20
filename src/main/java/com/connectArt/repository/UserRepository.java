@@ -25,4 +25,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
 	Boolean existsByEmail(String email);
 	
+	@Query(value = "SELECT * FROM admin WHERE id IN "
+			+ "(SELECT user_id FROM art_work WHERE id = ?1)", nativeQuery = true)
+	User findUsersDetailWithArtId(UUID artworkId);
+	
 }

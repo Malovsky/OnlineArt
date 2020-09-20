@@ -119,7 +119,10 @@ public class UserController {
 	}
 	
 	
-	
+	@GetMapping(path="/getOwnerById/{id}")
+	public User getOwnerById(@PathVariable("id") UUID id) {
+		return userRepo.findUsersDetailWithArtId(id);
+	}
 	
 	
 }

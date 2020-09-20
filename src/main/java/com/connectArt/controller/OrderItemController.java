@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.connectArt.dto.CustomerCommandDTO;
 import com.connectArt.model.OrderItem;
 import com.connectArt.repository.OrderItemRepository;
+
 
 @CrossOrigin
 @RestController
@@ -60,5 +62,11 @@ public class OrderItemController {
 		orderItemRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PostMapping("/itemOrderCustomerQuantity")
+	public ResponseEntity<Void> finalPoint(@RequestBody CustomerCommandDTO ccDto) {
+	return ResponseEntity.ok().build();
+	}
+	
 	
 }

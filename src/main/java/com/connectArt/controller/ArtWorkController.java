@@ -3,6 +3,7 @@ package com.connectArt.controller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.connectArt.dto.ArtworkPanierDto;
 import com.connectArt.dto.CreateArtWorkDto;
 import com.connectArt.model.ArtWork;
 import com.connectArt.model.User;
@@ -113,6 +115,15 @@ public class ArtWorkController {
 		log.info("id : {}", id);
 		ArtWork art = artWorkRepo.findById(id).get();
 		return Files.readAllBytes(Paths.get(System.getProperty("user.home")+"/ecom/artworks/" + art.getPhotoArtwork()));
+	}
+	
+	@PostMapping(path="/getMultipleArtworkById")
+	public ResponseEntity<List<ArtWork>> getMultipleArtworkById(@RequestBody List<UUID> idsArt) {
+		List<ArtWork> listToReturn = new ArrayList<>();
+		for (UUID id : idsArt) {
+			listToReturn.add(artWorkRepo.findById(id).get());
+		}
+		return ResponseEntity.ok(listToReturn);
 	}
 	
 	
