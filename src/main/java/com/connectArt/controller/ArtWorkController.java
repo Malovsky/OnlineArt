@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,6 +59,7 @@ public class ArtWorkController {
 	@GetMapping
 	public ResponseEntity<List<ArtWork>> getAll() {
 		List <ArtWork> allArtWorkList = artWorkRepo.findAll();
+		Collections.shuffle(allArtWorkList);
 		return ResponseEntity.ok(allArtWorkList);
 	}
 	

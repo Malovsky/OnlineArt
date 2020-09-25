@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class CustomerCommandDTO {
 
 	public UUID userId;
-	public List<UUID> orderItemIds;
+	public List<UUID> listArtIds;
 	
 }

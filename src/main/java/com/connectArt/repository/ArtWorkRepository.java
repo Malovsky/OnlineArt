@@ -16,4 +16,7 @@ public interface ArtWorkRepository extends JpaRepository<ArtWork, UUID>{
 	@Query(value = "SELECT * FROM art_work WHERE user_id = ?1", nativeQuery = true)
 	List<ArtWork> findMyArtworks(UUID userId);
 	
+	@Query(value = "DELETE * FROM artwork user_id = ?1", nativeQuery = true)
+	Void deleteUsersArtworks(UUID userId);
+	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -32,12 +33,12 @@ public class User extends Admin {
 	
 	String photoProfile;
 	
-	@OneToMany(targetEntity = OrderItem.class)
+	@OneToMany(targetEntity = OrderItem.class, cascade = CascadeType.ALL)
 	@JoinColumn(name = "orderList")
 	List<Order> orderList = new ArrayList<Order>();
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="user")
+	@OneToMany(mappedBy="user", cascade = CascadeType.ALL)
 	List<ArtWork> artworkList = new ArrayList<ArtWork>();
 
 	public User(UUID id, String pseudo, String password, String email, Set<Role> roles, List<Order> orderList, List<ArtWork> artworkList) {

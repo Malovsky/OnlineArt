@@ -1,5 +1,6 @@
 package com.connectArt.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,8 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectArt.dto.CustomerCommandDTO;
+import com.connectArt.model.ArtWork;
+import com.connectArt.model.Order;
 import com.connectArt.model.OrderItem;
+import com.connectArt.model.User;
+import com.connectArt.repository.ArtWorkRepository;
 import com.connectArt.repository.OrderItemRepository;
+import com.connectArt.repository.OrderRepository;
+import com.connectArt.repository.UserRepository;
 
 
 @CrossOrigin
@@ -28,6 +35,15 @@ public class OrderItemController {
 	
 	@Autowired
 	OrderItemRepository orderItemRepo;
+	
+	@Autowired
+	UserRepository userRepo;
+	
+	@Autowired
+	OrderRepository orderRepo;
+	
+	@Autowired
+	ArtWorkRepository artRepo;
 	
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping
@@ -65,7 +81,34 @@ public class OrderItemController {
 	
 	@PostMapping("/itemOrderCustomerQuantity")
 	public ResponseEntity<Void> finalPoint(@RequestBody CustomerCommandDTO ccDto) {
-	return ResponseEntity.ok().build();
+		List<OrderItem> orderItemList = new ArrayList<>();
+		User user = userRepo.findById(ccDto.getUserId()).get();
+		Order order = new Order();
+		List<UUID> ArtworkIds = ccDto.getListArtIds();
+		
+		orderRepo.save(order);
+		
+		int amount = 0;
+		int nbItems = 0;
+		for (UUID id : ArtworkIds) {
+			ArtWork art = artRepo.findById(id).get();
+			art.setAvailability(art.getAvailability() - 1);
+			artRepo.save(art);
+			OrderItem orderItem = new OrderItem(order, art, 1);
+			nbItems = nbItems + 1;
+			amount = amount + art.getPrice();
+			orderItemRepo.save(orderItem);
+			orderItemList.add(orderItem);
+		}
+		order.setOrderItemList(orderItemList);
+		order.setUserDetail(user);
+		order.setAmount(amount);
+		order.setNbItem(nbItems);
+		orderRepo.save(order);
+		user.getOrderList().add(order);
+		userRepo.save(user);
+		
+		return ResponseEntity.ok().build();
 	}
 	
 	

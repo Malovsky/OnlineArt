@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.connectArt.model.Order;
 import com.connectArt.model.OrderItem;
+import com.connectArt.repository.OrderItemRepository;
 import com.connectArt.repository.OrderRepository;
 
 @CrossOrigin
@@ -28,6 +29,9 @@ public class OrderController {
 	
 	@Autowired
 	OrderRepository orderRepo;
+	
+	@Autowired
+	OrderItemRepository orderItemRepo;
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping
@@ -64,4 +68,11 @@ public class OrderController {
 		orderRepo.deleteById(id);
 		return ResponseEntity.ok().build();
 	}
+	
+	@PreAuthorize("hasRole('USER')")
+	@GetMapping("/myOrders/{id}")
+	public ResponseEntity<List<Order>> getMyOrders(@PathVariable("id") UUID id) {
+		return ResponseEntity.ok(orderRepo.findUsersOrders(id));
+	}
+	
 }
