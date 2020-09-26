@@ -19,7 +19,7 @@ class ConnectArtApplicationTests {
 	UserRepository userRepo;
 	
 	@Test
-	public void testgetUserById() {
+	public void testGetUserById() {
 		User user = new User (UUID.randomUUID(), "KEVIN", "KEVIN1", "email@gmail.com", null);
 		userRepo.save(user);
 		User user2 = userRepo.getOne(user.getId());

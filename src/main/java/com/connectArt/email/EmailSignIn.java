@@ -38,12 +38,17 @@ public class EmailSignIn {
 			email.setFrom(Constants.MY_EMAIL);
 
 			// Email title
-			email.setSubject("OnlineArt vous souhaite la bienveue !" + LocalDate.now());
+			email.setSubject("OnlineArt vous souhaite la bienveue ! " + LocalDate.now());
 			
 			// Email message
 			strgB.append("Bonjour " + user.getUsername() + " ce mail valide la création de votre compte.\n"
-					+ "Vous pouvez dès à présent vous connecter via cette url : \n"
+					+ "Vous pouvez dès à présent vous connecter via cette url : http://localhost:4200/login\n"
 					+ "L'équipe Online Art.");
+			email.setMsg(strgB.toString());
+			
+			// Receiver
+			email.addTo(user.getEmail());
+			email.send();
 			
 		} catch (Exception e) {
 			log.error("Error : Envoie de mail échoué : {}");

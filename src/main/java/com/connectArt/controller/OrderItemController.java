@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.connectArt.dto.CustomerCommandDTO;
+import com.connectArt.email.EmailOrder;
 import com.connectArt.model.ArtWork;
 import com.connectArt.model.Order;
 import com.connectArt.model.OrderItem;
@@ -27,10 +28,13 @@ import com.connectArt.repository.OrderItemRepository;
 import com.connectArt.repository.OrderRepository;
 import com.connectArt.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/orderItem")
+@Slf4j
 public class OrderItemController {
 	
 	@Autowired
@@ -48,6 +52,7 @@ public class OrderItemController {
 	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<OrderItem>> getAll() {
+		log.info("Pass in getAll() - OrderItemController");
 		List<OrderItem> orderItemList = orderItemRepo.findAll();
 		return ResponseEntity.ok(orderItemList);
 	}
@@ -85,7 +90,12 @@ public class OrderItemController {
 		User user = userRepo.findById(ccDto.getUserId()).get();
 		Order order = new Order();
 		List<UUID> ArtworkIds = ccDto.getListArtIds();
+		List<ArtWork> artworks = new ArrayList<ArtWork>();
 		
+		for (UUID id : ArtworkIds) {
+			ArtWork art = artRepo.findById(id).get();
+			artworks.add(art);
+		}
 		orderRepo.save(order);
 		
 		int amount = 0;
@@ -106,7 +116,8 @@ public class OrderItemController {
 		order.setNbItem(nbItems);
 		orderRepo.save(order);
 		user.getOrderList().add(order);
-		userRepo.save(user);
+		
+		EmailOrder.orderRecap(user, artworks);
 		
 		return ResponseEntity.ok().build();
 	}

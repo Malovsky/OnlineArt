@@ -43,17 +43,5 @@ public class Order {
 	@JoinColumn(name = "orderItemList")
 	List<OrderItem> orderItemList = new ArrayList<OrderItem>();
 	
-	public void removeIdFromOrderItem(OrderItem orderitem) {
-		if (getOrderItemList() != null) {
-			getOrderItemList().remove(orderitem);
-		}
-	}
 	
 }
-
-
-//public void removeIncredianToBaseProduct(ProductOfIngrediant productOfIngrediant) {
-//    if (getProductOfIngrediants() != null) {
-//        getProductOfIngrediants().remove(productOfIngrediant);
-//    }
-//}
